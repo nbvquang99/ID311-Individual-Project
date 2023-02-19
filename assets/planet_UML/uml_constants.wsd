@@ -1,0 +1,13 @@
+@startjson
+{
+   "BULLET_SIZE":"20",
+   "CURSOR_SIZE":"80",
+   "TARGET_WIDTH":"100",
+   "BULLET_DURATION":"2000",
+   "BULLET_HOLE_SIZE":"20",
+   "MAX_TARGETS":"5",
+   "TOT_SHOTS":"6",
+   "FONT_SIZE":"25"
+}
+@endjson
+
