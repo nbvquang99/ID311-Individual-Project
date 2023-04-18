@@ -5,7 +5,6 @@ import { Target } from './Target';
 import bullet from '../data/bullet.png';
 
 class ScoreDisplay {
-  
   // TO DO
 }
 

@@ -1,13 +1,13 @@
-# Homework 5 - Software Prototyping ID311
+# Homework 6 - Software Prototyping ID311
 
-- **Deadline: April 18th, 2022 at 11:59 pm**
-- _[Live demo](http://hw5demo.surge.sh)_
+- **Deadline: April 30th, 2023 at 11:59 pm**
+- _[Live demo](http://hw6demo.surge.sh)_
 
 ## General Description
 
 In this assignment, you will practice with **classes, inheritance, and Object-Oriented Programming (OOP) patterns**, by implementing a simple _shooting game_. The assignment will also familiarize you with loading and playing sounds, timeout, reading UML class diagrams, and writing code that interfaces with pre-existing code (the `main.js` written by the instructor).
 
-**NOTE**: there could be unwanted delays in the demo due to the fact that images and sounds are loaded. Please ignore delays (they were not meant).
+**NOTE**: there could be unwanted delays in the demo due to the fact that images and sounds are loaded. Please ignore delays (they were not meant and if you run your code locally, they probably will not be there).
 
 <p align="center">
 <img src="assets/main.png" width="100%" />
@@ -33,8 +33,8 @@ The app will be previewed on the local server on port `3000`.
 ## Requirments
 
 - **Implements all the classes and methods** as specified in the UML diagram below.
-- You cannot modify `main.js` - you can only **uncomment** the code once you have implemented the methods called there.
-- You can add more classes, functions, or methods to classes, _but, if you do so, you have to document them_ with a UML diagram to be included in your final submission.
+- You can modify `main.js` and any other file.
+- You can also add more classes, functions, or methods to classes, etc... _but, if you do so, you have to document them_ with a UML diagram to be included in your final submission.
 
 ## Overview
 
@@ -42,7 +42,7 @@ The app will be previewed on the local server on port `3000`.
 <img src="assets/uml_classes.png" width="100%" />
 </p>
 
-You are required to implement several classes, across several files, as seen in the [image above](assets/uml_classes.png). The diagram above is full of details: **read it carefully**!
+You are required to implement several classes, across several files, as seen in the [image above](assets/uml_classes.png). The diagram above is full of details: **read it carefully**.
 
 ### Classes
 
@@ -91,9 +91,9 @@ this.notifySubscribers('gun', x, y, remainingShots);
 
 ```js
 update(source, ...others) {
-    if (source == 'gun') {
+    if (source == 'gun') { // observer of a gun
       // ... others contains the data we need
-    } else if (source == '...')
+    } else if (source == '...') // observer of something else...
       //...
     }
     // ...
@@ -133,7 +133,7 @@ If the program does not compile (e.g., not a valid javascript file) the score is
 1. After completing your code, make sure to fill up the [SubmissionNotes](./SubmissionNotes.md) with your basic info and indicate whether you received any help. Feel free to add any relevant information.
 2. Zip the folder of this repository containing your solution and the `.git` repository folder.
 3. Do not include the `node_modules` folder. You can simply delete it.
-4. Submit the homework using the class [submission system](https://homework.prototyping.id). Choose `HW5`.
+4. Submit the homework using the class [submission system](https://homework.prototyping.id). Choose `HW6`.
 5. For any problem feel free to contact the professor or TA via Discord.
 
 **NOTES**
@@ -143,3 +143,4 @@ If the program does not compile (e.g., not a valid javascript file) the score is
 - Submissions after the deadline (even a few minutes) will receive a penalty of 50%. Submissions submitted after 24 hours from the deadline will be ignored (score will be 0).
 - Keep a screenshot that proves your completed submission.
 - Coding style might be considered in grading.
+- For any mistake in this document or any question, reach out to the professor or the TA.

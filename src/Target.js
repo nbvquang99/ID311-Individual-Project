@@ -6,10 +6,8 @@ import duck from '../data/duck.png';
 import squirrel from '../data/squirrel.png';
 
 class Target {
-  
- // TO DO
+  // TO DO
 }
-
 
 // TO DO
 // class TeddyTarget ...
@@ -17,9 +15,7 @@ class Target {
 // class SquirrelTarget ...
 
 class TargetFactory {
-
   // TO DO
 }
-
 
 export { Target, TargetFactory };

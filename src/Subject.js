@@ -1,5 +1,4 @@
 class Subject {
-  
   // TO DO
 }
 
