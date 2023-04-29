@@ -11,37 +11,54 @@ let score;
 let targets = [];
 
 function setup() {
-  createCanvas(800, 600);
+	createCanvas(800, 600);
 
-  // 1. Init gun and score display
+	// 1. Init gun and score display
+	gun = new Gun(TOT_SHOTS);
+	score = new ScoreDisplay(TOT_SHOTS);
+	// console.log(gun);
+	// console.log(score);
+	// 2. Init the targets
+	initTargets();
 
-  // 2. Init the targets
-
-  // 3. Subscribe gun
+	// 3. Subscribe gun
 }
 
 function draw() {
-  background('#eeeeee');
-
-  // draw targets, gun, bullets, score
+	background('#eeeeee');
+	// draw targets, gun, bullets, score
+	for (let target of targets) target.draw();
+	gun.draw();
+	score.draw();
 }
 
 // Shoot
 function mousePressed() {
-  // shoot
+	// shoot
+	gun.shoot();
 }
 
 // Spacebar to reload
 function keyPressed() {
-  if (key === ' ') {
-    // reset score and targets
-  }
+	if (key === ' ') {
+		// reset score and targets
+		initTargets();
+		gun.reload();
+		score.resetScore();
+	}
 }
 
 // init the targets
 function initTargets() {
-  // Create new targets from the factory
-  // Remember to unsubscribe the previous targets and to subscribe the new ones
+	// Create new targets from the factory
+	// Remember to unsubscribe the previous targets and to subscribe the new ones
+	gun.unsubscribeAll();
+	gun.subscribe(score);
+	targets = TargetFactory.getInstance().getRandomTargets(MAX_TARGETS, TARGET_WIDTH, height / 2);
+	for (let target of targets) {
+		target.subscribe(score);
+		gun.subscribe(target);
+	}
 }
 
 // Do not touch these
