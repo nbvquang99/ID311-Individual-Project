@@ -71,7 +71,12 @@ class Bullet {
         }, BULLET_DURATION);
     }
 
-  // TO DO
+    draw() {
+		if (this.visible && this.img != null) {
+			imageMode(CENTER);
+        	image(this.img, this.x, this.y, BULLET_HOLE_SIZE, BULLET_HOLE_SIZE);
+		}
+	}
 }
 
 
