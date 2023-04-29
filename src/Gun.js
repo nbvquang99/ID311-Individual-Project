@@ -61,6 +61,15 @@ class Gun extends Subject  {
 
 // Bullet
 class Bullet {
+	constructor(x, y) {
+        this.img = loadImage(bulletHole);
+        this.visible = true;
+        this.x = x;
+        this.y = y;
+        setTimeout(() => {
+            this.visible = false;
+        }, BULLET_DURATION);
+    }
   
   // TO DO
 }
