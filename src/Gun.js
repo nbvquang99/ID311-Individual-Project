@@ -70,7 +70,7 @@ class Bullet {
             this.visible = false;
         }, BULLET_DURATION);
     }
-  
+
   // TO DO
 }
 
