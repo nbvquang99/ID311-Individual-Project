@@ -20,7 +20,42 @@ class Gun extends Subject  {
         this.y = 0 ;
     }
 
-  // TO DO
+	draw() {
+        if (this.cursor != null) {
+            imageMode(CENTER);
+            image(this.cursor, mouseX, mouseY, CURSOR_SIZE, CURSOR_SIZE);
+            for (let bullet of this.bullets) {
+				bullet.draw();
+			}
+        }
+    }
+
+    reload() {
+        this.bullets = [];
+        this.remainingShots = this.totShots;
+        this.notifySubscribers("gun", this.x, this.y, this.getRemainingShots());
+    }
+
+    getRemainingShots() {
+        return this.remainingShots;
+    }
+
+    shoot() {
+        if (this.remainingShots <= 0) {
+			if (this.emptySound != null) {
+				this.emptySound.play();
+			}
+        } else {
+			this.remainingShots--;
+			this.x = mouseX + random(-30, 30);
+			this.y = mouseY + random(-30, 30);
+			this.bullets.push(new Bullet(this.x, this.y));
+			if (this.shotSound != null) {
+				this.shotSound.play();
+			}
+		}
+        this.notifySubscribers("gun", this.x, this.y, this.getRemainingShots());
+    }
 }
 
 
