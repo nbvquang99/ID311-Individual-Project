@@ -1,10 +1,10 @@
 # Homework submission form
 
-1. **Your name**: NAME
+1. **Your name**: Nguyen Ba Vinh Quang
 
-2. **KAIST ID**: 0000000
+2. **KAIST ID**: 20190710
 
-3. **Email**: YOUR_EMAIL@kaist.ac.kr
+3. **Email**: nbvquang99@kaist.ac.kr
 
 ---
 
