@@ -1,4 +1,4 @@
-# Homework submission form
+# ID311 Individual project submission form
 
 1. **Your name**: Nguyen Ba Vinh Quang
 
@@ -9,10 +9,8 @@
 ---
 
 ## Description
-- Reference: [Demo website](http://hw6demo.surge.sh/)
-
-Feel free to use this space to add any relevant information. You can add, for example:
-
-- Links to images/Video/Additional material\*\*: [example](http://...)
-- List the people/resources you received help from: ...
-- Anything else you want to say about how to use your softare, issues, or limitations of your work
+- Reference: [Taylor Edgerton Repo](https://github.com/TaylorEdgerton/Creative-Coding-Game)
+- All the assets (audios, videos, images) are taken from the repo above.
+- The game idea is based on the game of Taylor Edgerton.
+- All the source code and gameplay logic is implemented by Nguyen Ba Vinh Quang.
+- Library: p5.js and p5play.
