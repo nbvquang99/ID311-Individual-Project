@@ -1,6 +1,19 @@
 // Constants for the game
-// Use them if you want to
-export const CURSOR_SIZE = 80;
-export const FONT_SIZE = 25;
-export const CITY_HEIGHT = 25;
-export const CITY_WIDTH = 25;
+export const CURSOR_SIZE = 40;
+export const FONT_SIZE = 24;
+
+export const ATTACKER_WIDTH = 150;
+export const ATTACKER_HEIGTH = 20;
+export const ATTACKER_INIT_NUM = 10;
+
+export const CITY_HEIGHT = 100;
+export const BLOWN_CITY_HEIGHT = 20;
+export const CITY_WIDTH = 100;
+export const CITY_NUM = 4;
+
+export const BULLET_WIDTH = 50;
+export const BULLET_HEIGTH = 50;
+export const BULLET_INIT_NUM = 15;
+
+export const WINDOW_WIDTH = 1500;
+export const WINDOW_HEIGHT = 850;
