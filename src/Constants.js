@@ -15,5 +15,10 @@ export const BULLET_WIDTH = 50;
 export const BULLET_HEIGTH = 50;
 export const BULLET_INIT_NUM = 15;
 
+export const SUPER_BULLET_WIDTH = 130;
+export const SUPER_BULLET_HEIGTH = 30;
+
+export const EXPLOSION_RADIUS = 84;
+
 export const WINDOW_WIDTH = 1500;
 export const WINDOW_HEIGHT = 850;

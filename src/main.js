@@ -2,6 +2,7 @@ import '../css/style.css';
 import { Attacker } from './Attacker';
 import { City } from './City.js';
 import { Bullet } from './Bullet.js';
+import { SuperBullet } from './SuperBullet.js';
 import { CITY_NUM, WINDOW_HEIGHT } from './Constants';
 import { Cursor } from './Cursor';
 import { StaticDisplay } from './StaticDisplay';
@@ -263,6 +264,7 @@ function gameplayCompute() {
 			allowIncLevel = true;
 		}
 		for (let j = bulletArr.length-1; j >= 0; j--) {
+			if (bullets[bulletArr[j]].isSuper) staticDisplay.increaseScore(100);
 			bullets[bulletArr[j]].bulletExploded();
 			bullets.splice(bulletArr[j], 1);
 		}
@@ -302,6 +304,18 @@ function mousePressed() {
 		if (staticDisplay.bulletNum > 0) {
 			staticDisplay.increaseBulletNum(-1);
 			bullets.push(new Bullet());
+			for (let i = 0; i<bullets.length-1; i++) bullets[bullets.length-1].getSprite().overlaps(bullets[i].getSprite());
+			for (let i = 0; i<cities.length; i++) bullets[bullets.length-1].getSprite().overlaps(cities[i].getSprite());
+			bullets[bullets.length-1].bulletShoot();
+			laserSound.play();
+		} else {
+			noAmmoSound.play();
+		}
+	}
+	if (mouseButton === RIGHT && gameState == 0) {
+		if (staticDisplay.bulletNum > 1) {
+			staticDisplay.increaseBulletNum(-2);
+			bullets.push(new SuperBullet());
 			for (let i = 0; i<bullets.length-1; i++) bullets[bullets.length-1].getSprite().overlaps(bullets[i].getSprite());
 			for (let i = 0; i<cities.length; i++) bullets[bullets.length-1].getSprite().overlaps(cities[i].getSprite());
 			bullets[bullets.length-1].bulletShoot();

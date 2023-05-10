@@ -1,21 +1,21 @@
-import { BULLET_HEIGTH, BULLET_WIDTH, EXPLOSION_RADIUS } from './Constants.js';
-import { Subject } from './Subject';
+import { EXPLOSION_RADIUS, SUPER_BULLET_HEIGTH, SUPER_BULLET_WIDTH } from './Constants.js';
 import { loadAndScale, loadMultiAndScale } from './Util.js';
 
 // Assets
-import bulletImg from '../assets/rockets/missile.png';
+import bulletImg from '../assets/rockets/superMissile.png';
 
-class Bullet extends Subject  {
+class SuperBullet {
 	constructor() {
-        super();
-        this.isSuper = false;
+        this.isSuper = true;
         this.shooting = false;
-        this.bullet = new Sprite(width/2, height, EXPLOSION_RADIUS, 'none');
+        this.bullet = new Sprite(width/2, height, EXPLOSION_RADIUS*2, 'none');
         loadMultiAndScale(10, "assets/explosions/expl", ".png").then((loadedArr)=>{
             this.bullet.addAnimation("explosion", ...loadedArr);
+            this.bullet.animation.scale.x = 2;
+            this.bullet.animation.scale.y = 2;
             this.bullet.animation.noLoop();
         });
-        loadAndScale(bulletImg, BULLET_WIDTH, BULLET_HEIGTH).then((loadedImg) => {
+        loadAndScale(bulletImg, SUPER_BULLET_WIDTH, SUPER_BULLET_HEIGTH).then((loadedImg) => {
             this.bullet.addAnimation("bullet", loadedImg);
             this.bullet.changeAnimation("bullet");
         });
@@ -70,4 +70,4 @@ class Bullet extends Subject  {
     }
 }
 
-export { Bullet };
+export { SuperBullet };
