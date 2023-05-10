@@ -134,7 +134,7 @@ function draw() {
 		textAlign(CENTER);
         text("Controls: Aim = Mouse     Fire = Left-mouse     Super Fire = Right-mouse     Menu = Esc", width/2, height-50);
 		/*---Play music---*/
-		// introMusic.play();
+		introMusic.play();
         introMusic.playMode("untilDone");
 		/*---Button show---*/
 		startButton.style('font-size', '20px');
