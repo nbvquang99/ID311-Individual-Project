@@ -1,79 +1,64 @@
-import { CURSOR_SIZE, BULLET_HOLE_SIZE, BULLET_DURATION } from './Constants.js';
+import { BLOWN_CITY_HEIGHT, CITY_HEIGHT, CITY_WIDTH, WINDOW_HEIGHT } from './Constants.js';
 import { Subject } from './Subject';
+import { loadAndScale } from './Util.js';
 
 // Assets
-import cursor from '../data/cursor.png';
-import bulletHole from '../data/bulletHole.png';
-import shot from '../data/shot.mp3';
-import empty from '../data/empty.mp3';
+import cityImg from '../assets/City.png';
+import blownCity from '../assets/explodedCity.png';
 
 class City extends Subject  {
 	constructor(x, y) {
         super();
+        this.isBlown = false;
         this.x = x;
         this.y = y;
-        this.city = new Sprite(x, y, );
-        
+        this.city = new Sprite(x, y, CITY_WIDTH, CITY_HEIGHT, "static");
+        loadAndScale(blownCity, CITY_WIDTH, BLOWN_CITY_HEIGHT).then((loadedImg) => {
+            this.blownCity = loadedImg;
+            this.city.addAnimation("cityBlown", loadedImg);
+        });
+        loadAndScale(cityImg, CITY_WIDTH, CITY_HEIGHT).then((loadedImg) => {
+            this.cityImg = loadedImg;
+            this.city.addAnimation("city", loadedImg);
+            this.city.changeAnimation("city");
+        });
+        this.city.autoDraw = false;
     }
 
-	draw() {
-        if (this.cursor != null) {
-            imageMode(CENTER);
-            image(this.cursor, mouseX, mouseY, CURSOR_SIZE, CURSOR_SIZE);
-            for (let bullet of this.bullets) {
-				bullet.draw();
-			}
+    blown() {
+        if (!this.isBlown) {
+            this.isBlown = true;
+            this.city.collider = "static";
+            this.city.y = this.y+40;
+            this.city.changeAnimation("cityBlown");
         }
     }
 
-    reload() {
-        this.bullets = [];
-        this.remainingShots = this.totShots;
-        this.notifySubscribers("gun", this.x, this.y, this.getRemainingShots());
+    cityReset() {
+        this.isBlown = false;
+        this.city.x = this.x;
+        this.city.y = this.y;
+        this.city.changeAnimation("city");
     }
 
-    getRemainingShots() {
-        return this.remainingShots;
+    getSprite() {
+        return this.city;
     }
 
-    shoot() {
-        if (this.remainingShots <= 0) {
-			if (this.emptySound != null) {
-				this.emptySound.play();
-			}
-        } else {
-			this.remainingShots--;
-			this.x = mouseX + random(-30, 30);
-			this.y = mouseY + random(-30, 30);
-			this.bullets.push(new Bullet(this.x, this.y));
-			if (this.shotSound != null) {
-				this.shotSound.play();
-			}
-		}
-        this.notifySubscribers("gun", this.x, this.y, this.getRemainingShots());
+	draw() {
+        if (!this.isBlown) this.city.collider = "dynamic";
+        this.city.autoDraw = true;
+    }
+
+    unDraw() {
+        this.city.autoDraw = false;
+    }
+
+    update(source, ...others) {
+        if (source = "attacker") {
+            this.blown();
+        }
     }
 }
 
-
-// Bullet
-class Bullet {
-	constructor(x, y) {
-        this.img = loadImage(bulletHole);
-        this.visible = true;
-        this.x = x;
-        this.y = y;
-        setTimeout(() => {
-            this.visible = false;
-        }, BULLET_DURATION);
-    }
-
-    draw() {
-		if (this.visible && this.img != null) {
-			imageMode(CENTER);
-        	image(this.img, this.x, this.y, BULLET_HOLE_SIZE, BULLET_HOLE_SIZE);
-		}
-	}
-}
-
-
-export { Gun };
+export { City };
