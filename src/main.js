@@ -132,7 +132,7 @@ function draw() {
         textSize(10);
         textFont(staticDisplay.gameFont);
 		textAlign(CENTER);
-        text("Controls: Aim = Mouse     Fire = Left-mouse     Menu = Esc", width/2, height-50);
+        text("Controls: Aim = Mouse     Fire = Left-mouse     Super Fire = Right-mouse     Menu = Esc", width/2, height-50);
 		/*---Play music---*/
 		// introMusic.play();
         introMusic.playMode("untilDone");
