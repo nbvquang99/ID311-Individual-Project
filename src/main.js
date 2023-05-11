@@ -263,7 +263,7 @@ function draw() {
 			bossDied = boss.randomSequence();
 		}
 	}
-	if (gameState == 6) { // warning screen
+	if (gameState == 6) { // boss died screen
 		clear();
 		// draw background
 		background("Darkblue");
