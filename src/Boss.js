@@ -24,6 +24,22 @@ class Boss {
         this.ufo.pixelPerfect = true;
     }
 
+    isHitUfo(objArr) {
+        for (let i = 0; i<objArr.length; i++) {
+            if (this.ufo.collides(objArr[i].getSprite())) return i;
+        }
+        return -1;
+    }
+
+    isHitAmmo(objArr) {
+        for (let i = 0; i<this.ammoArr.length; i++) {
+            for (let j = 0; j<objArr.length; j++) {
+                if (this.ammoArr[i].getSprite().collides(objArr[j].getSprite())) return j;
+            }
+        }
+        return -1;
+    }
+
     async randomSequence() {
         this.draw();
         let x = random(138, WINDOW_WIDTH-138);
@@ -65,7 +81,7 @@ class Boss {
 
 class Ammo {
     constructor(x, y, img) {
-        this.ammo = new Sprite(x, y+50, 70, 70, "none");
+        this.ammo = new Sprite(x, y+50, 70, 70, "kinematic");
         this.ammo.addAnimation("ammo", img);
         this.ammo.animation.frameDelay = 1;
         this.ammo.direction = random(40, 150);
