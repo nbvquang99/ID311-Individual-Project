@@ -23,6 +23,7 @@ class City extends Fire  {
             this.city.changeAnimation("city");
         });
         this.city.autoDraw = false;
+        this.city.pixelPerfect = true;
     }
 
     blown() {

@@ -13,6 +13,7 @@ class Airdrop {
         this.airDrop.speed = 0;
         this.airDrop.direction = 90;
         this.airDrop.autoDraw = false;
+        this.airDrop.pixelPerfect = true;
     }
 
     airDropLaunch() {

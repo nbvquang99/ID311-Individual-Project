@@ -18,6 +18,7 @@ class Bullet {
             this.bullet.changeAnimation("bullet");
         });
         this.bullet.autoDraw = false;
+        this.bullet.pixelPerfect = true;
     }
 
     bulletShoot() {
@@ -34,13 +35,16 @@ class Bullet {
     }
 
     bulletExploded() {
-        this.bullet.collider = "static";
-        if (this.bullet.animation.name != "explosion") {
-            this.bullet.changeAnimation("explosion").then((res) => {
-                // this.bulletReset();
-                this.bullet.remove();
-            });
-        }
+        return new Promise((resolve, reject) => {
+            this.bullet.collider = "static";
+            this.shooting = false;
+            if (this.bullet.animation.name != "explosion") {
+                this.bullet.changeAnimation("explosion").then((res) => {
+                    this.bullet.remove();
+                });
+            }
+            resolve();
+        });
     }
 
     bulletReset() {

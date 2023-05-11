@@ -13,7 +13,7 @@ let bullets = []; 			// array of our ammo
 let cities = []; 			// array of cities that we need to protect
 let rockets = []; 			// array of attackers
 let airDrops = [];			// array of airdrops
-let airDropDelta = 1800;	// number of frames before airdrops
+let airDropDelta = 600;		// number of frames before airdrops
 let previousFrameCount = 0;	// store the previous frame count
 let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page
 let rumbleCheck = false;	// screen rumble
@@ -78,8 +78,7 @@ function preload() {
 
 function setup() {
 	createCanvas(1500, 850);
-	world.gravity.x = 0;
-	world.gravity.y = 0;
+	world.gravity = 0;
 	// resize background
 	backgroundImage.resize(width, height);
 	// button creation
@@ -113,7 +112,7 @@ function draw() {
 		rumble();
 		// airdop
 		if (staticDisplay.bulletNum < 30) {
-			if (airDropStart(airDropDelta, 1)) {
+			if (airDropStart(airDropDelta, 2)) {
 				airDropDelta = Math.floor(random(30, 60))*60;
 			}
 			airDropStart(airDropDelta, 1);
@@ -140,6 +139,7 @@ function draw() {
         text("Press Space",width/2,height-50);
 	}
 	if (gameState == 2) { // main menu
+		previousFrameCount = frameCount;
 		clear();
 		imageMode(CORNER);
         image(backgroundImage, 0, 0);
@@ -305,8 +305,9 @@ function gameplayCompute() {
 		}
 		for (let j = bulletArr.length-1; j >= 0; j--) {
 			if (bullets[bulletArr[j]].isSuper) staticDisplay.increaseScore(100);
-			bullets[bulletArr[j]].bulletExploded();
-			bullets.splice(bulletArr[j], 1);
+			bullets[bulletArr[j]].bulletExploded().then(()=>{
+				bullets.splice(bulletArr[j], 1);
+			});
 		}
 		rockets[i].rocketReset(false);
 	}
@@ -317,8 +318,9 @@ function gameplayCompute() {
 		if (bulletId > -1) {
 			explSound.play();
 			airDrops[i].airDropExploded();
-			bullets[bulletId].bulletExploded();
-			bullets.splice(bulletId, 1);
+			bullets[bulletId].bulletExploded().then(()=>{
+				bullets.splice(bulletId, 1);
+			});
 			staticDisplay.increaseBulletNum(10);
 		}
 		airDrops[i].airDropReset(false);

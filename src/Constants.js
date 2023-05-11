@@ -17,7 +17,7 @@ export const CITY_NUM = 4;
 
 export const BULLET_WIDTH = 50;
 export const BULLET_HEIGTH = 50;
-export const BULLET_INIT_NUM = 15;
+export const BULLET_INIT_NUM = 200;
 
 export const SUPER_BULLET_WIDTH = 130;
 export const SUPER_BULLET_HEIGTH = 30;

@@ -20,6 +20,7 @@ class Attacker {
         this.rocket.rotation = this.angle;
         this.rocket.direction = this.angle;
         this.rocket.autoDraw = false;
+        this.rocket.pixelPerfect = true;
     }
 
     rocketLaunch() {

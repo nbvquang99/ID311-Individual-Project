@@ -11,7 +11,6 @@ class Fire {
             this.fire.addAnimation("fire", loadedImg);
         });
         this.fire.autoDraw = false;
-        this.fire.layer = 0;
     }
 
 	drawFire() {
