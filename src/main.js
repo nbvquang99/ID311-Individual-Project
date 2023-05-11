@@ -3,7 +3,7 @@ import { Attacker } from './Attacker';
 import { City } from './City.js';
 import { Bullet } from './Bullet.js';
 import { SuperBullet } from './SuperBullet.js';
-import { AIRDROP_NUM, CITY_NUM, WINDOW_HEIGHT } from './Constants';
+import { AIRDROP_NUM, CITY_NUM, LEVEL_TO_BOSS, WINDOW_HEIGHT } from './Constants';
 import { Cursor } from './Cursor';
 import { StaticDisplay } from './StaticDisplay';
 import { Airdrop } from './Airdrop';
@@ -21,6 +21,8 @@ let rumbleCheck = false;	// screen rumble
 let boss;
 let bossPhase = false;
 let warningStartFrame;
+let bossDied;
+let drawnExploded;
 
 // Images
 let backgroundImage;
@@ -103,7 +105,6 @@ function setup() {
 	for (let i=0; i<AIRDROP_NUM; i++) {
 		for (let j=0; j<CITY_NUM; j++) airDrops[i].getSprite().overlaps(cities[j].getSprite());
 	}
-	// boss.randomSequence();
 }
 
 function draw() {
@@ -257,9 +258,37 @@ function draw() {
 		// after 5s, move to the boss phase
 		if (frameCount - warningStartFrame >= 300) {
 			gameState = 0;
+			warningSound.stop();
 			bossPhase = true;
-			boss.randomSequence();
+			bossDied = boss.randomSequence();
+			boss.draw();
 		}
+	}
+	if (gameState == 6) { // warning screen
+		clear();
+		// draw background
+		background("Darkblue");
+		imageMode(CORNER);
+		image(backgroundImage,0,0);
+		// draw cursor
+		cursor.draw();
+		// draw scores and cannon
+		staticDisplay.drawScore();
+		staticDisplay.drawCannon();
+		// draw cities
+		for (let i = 0; i < CITY_NUM; i++) {
+			cities[i].draw();
+		}
+		// undraw boss attackers
+		boss.unDrawAttack();
+		boss.stopMoving = true;
+		bossDied.then(()=> {
+			drawnExploded.then(()=>{
+				boss.unDraw();
+				gameState = 1;
+			});
+		});
+		bossPhase = false;
 	}
 }
 
@@ -293,6 +322,7 @@ function gameplayHide() {
 		airDrops[i].unDraw();
 	}
 	cursor.unDraw();
+	boss.unDraw();
 }
 
 function gameReset() {
@@ -312,6 +342,12 @@ function gameReset() {
 	bullets = [];
 	// reset statistic
 	staticDisplay.reset();
+	allowIncLevel = false;
+	// reset boss
+	boss.bossReset();
+	bossPhase = false;
+	bossDied = null;
+	drawnExploded = null;
 }
 
 function gameplayCompute() {
@@ -362,8 +398,9 @@ function gameplayCompute() {
 		}
 		// check boss defeated
 		if (boss.health <= 0) {
-			gameState = 1;
+			gameState = 6;
 			staticDisplay.increaseScore(10000);
+			drawnExploded = boss.drawExplosion();
 		}
 		// check boss attack collision with bullet and cities
 		for (let i=boss.ammoArr.length-1; i>=0; i--) {
@@ -402,7 +439,7 @@ function gameplayCompute() {
 		allowIncLevel = false;
 		nextLevelSound.play();
 		staticDisplay.increaseLevel();
-		if (staticDisplay.level == 2) {
+		if (staticDisplay.level == LEVEL_TO_BOSS) { // into warning screen
 			gameState = 5;
 			warningSound.loop();
 			warningSound.play();
@@ -416,9 +453,7 @@ function gameplayCompute() {
 		return acc;
 	}, 0);
 	if (citiesLeft == 0) {
-		rumbleCheck = false;
 		gameState = 1;
-		staticDisplay.saveScore();
 	}
 }
 
@@ -461,8 +496,10 @@ function mousePressed() {
 // Spacebar to reload
 function keyPressed() {
 	if (kb.presses('space') && gameState == 1) {
-		gameState = 2;
 		gameReset();
+		gameState = 2;
+		staticDisplay.saveScore();
+		rumbleCheck = false;
 	}
 	if (keyCode == 27 && gameState == 0) {
 		gameState = 2;
