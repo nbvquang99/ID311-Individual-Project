@@ -10,6 +10,7 @@ class Boss {
         loadAndScale(bossAmmoImg, 100, 100).then((loadedImg) => {
             this.ammoImg = loadedImg;
         });
+        this.ammoArr = [];
         this.shadow = new Sprite(WINDOW_WIDTH/2, 100, 115.5, 'kinematic');
         this.ufo = new Sprite(WINDOW_WIDTH/2, 100, 553.6, 232, 'none');
         this.ufo.spriteSheet = bossImg;
@@ -34,7 +35,8 @@ class Boss {
 
     shoot(x, y) {
         return new Promise((resolve, reject) => {
-            let attack = new Ammo(x, y, this.ammoImg);
+            this.ammoArr.push(new Ammo(x, y, this.ammoImg));
+            this.ammoArr.push(new Ammo(x, y, this.ammoImg));
             resolve();
         });
     }
@@ -62,12 +64,10 @@ class Boss {
 
 class Ammo {
     constructor(x, y, img) {
-        this.ammo = new Sprite(x, y, 50, 50, "none");
-        this.ammo.autoDraw = false;
+        this.ammo = new Sprite(x, y+50, 50, 50, "none");
         this.ammo.addAnimation("ammo", img);
         this.ammo.animation.frameDelay = 1;
-        this.ammo.autoDraw = true;
-        this.ammo.direction = 90;
+        this.ammo.direction = random(40, 150);
         this.ammo.pixelPerfect = true;
         this.ammo.speed = 5;
     }
