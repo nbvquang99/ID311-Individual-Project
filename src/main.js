@@ -16,10 +16,11 @@ let rockets = []; 			// array of attackers
 let airDrops = [];			// array of airdrops
 let airDropDelta = 600;		// number of frames before airdrops
 let previousFrameCount = 0;	// store the previous frame count
-let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page
+let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page; 5:boss warning; 6:boss defeated
 let rumbleCheck = false;	// screen rumble
 let boss;
 let bossPhase = false;
+let warningStartFrame;
 
 // Images
 let backgroundImage;
@@ -27,6 +28,7 @@ let scoreTitle;
 let gameTitle;
 let leaderboardTitle;
 let splashVideo;
+let warning;
 
 // Sound
 let laserSound;
@@ -35,6 +37,7 @@ let noAmmoSound;
 let nextLevelSound;
 let introMusic;
 let airDropSound;
+let warningSound;
 
 // Cursor
 let cursor;
@@ -53,6 +56,7 @@ function preload() {
 	scoreTitle = loadImage("../assets/Text/score.png");
 	gameTitle = loadImage("../assets/Text/title.png");
 	leaderboardTitle = loadImage("../assets/Text/leaderboard.png");
+	warning = loadImage("../assets/Text/warning.gif");
 	splashVideo = createVideo(['../assets/Video/video1.mp4']);
 	// sound loading
 	explSound = loadSound('../assets/Sounds/explosionSound.wav');
@@ -61,6 +65,7 @@ function preload() {
     nextLevelSound = loadSound('../assets/Sounds/NextLevel.wav');
     introMusic = loadSound('../assets/Sounds/throughSpace.mp3');
     airDropSound = loadSound('../assets/Sounds/airdrop.wav');
+    warningSound = loadSound('../assets/Sounds/warningSound.mp3');
 	// create Cursor
 	cursor = new Cursor();
 	// create static display
@@ -86,6 +91,8 @@ function setup() {
 	world.gravity = 0;
 	// resize background
 	backgroundImage.resize(width, height);
+	// resize warning
+	warning.resize(width, warning.height);
 	// button creation
     startButton = createButton('Start Game');
     leaderButton = createButton ('Leaderboard');
@@ -226,6 +233,34 @@ function draw() {
 			gameState = 2;
 		}
 	}
+	if (gameState == 5) { // warning screen
+		clear();
+		// draw background
+		background("Darkblue");
+		imageMode(CORNER);
+		image(backgroundImage,0,0);
+		image(warning, 0, height/2-200);
+		// draw cursor
+		cursor.draw();
+		// draw scores and cannon
+		staticDisplay.drawScore();
+		staticDisplay.drawCannon();
+		// draw cities
+		for (let i = 0; i < CITY_NUM; i++) {
+			cities[i].draw();
+		}
+		// undraw attackers
+		for (let i = 0; i < staticDisplay.attackerNum; i++) {
+			rockets[i].unDraw();
+			rockets[i].rocketReset(true);
+		}
+		// after 5s, move to the boss phase
+		if (frameCount - warningStartFrame >= 300) {
+			gameState = 0;
+			bossPhase = true;
+			boss.randomSequence();
+		}
+	}
 }
 
 function airDropStart(delta, num) {
@@ -317,11 +352,6 @@ function gameplayCompute() {
 			rockets[i].rocketLaunch();
 		}
 	} else { /*--- Boss ---*/
-		// undraw attackers
-		for (let i = 0; i < staticDisplay.attackerNum; i++) {
-			rockets[i].unDraw();
-			rockets[i].rocketReset(true);
-		}
 		// check bullets collides UFO
 		let bulletArr = boss.isHitUfo(bullets);
 		boss.health -= bulletArr.length;
@@ -330,7 +360,7 @@ function gameplayCompute() {
 			explSound.play();
 			bullets[bulletArr[j]].bulletExploded();
 		}
-		// check health boss
+		// check boss defeated
 		if (boss.health <= 0) {
 			gameState = 1;
 			staticDisplay.increaseScore(10000);
@@ -373,8 +403,10 @@ function gameplayCompute() {
 		nextLevelSound.play();
 		staticDisplay.increaseLevel();
 		if (staticDisplay.level == 2) {
-			bossPhase = true;
-			boss.randomSequence();
+			gameState = 5;
+			warningSound.loop();
+			warningSound.play();
+			warningStartFrame = frameCount;
 		}
 	}
 
