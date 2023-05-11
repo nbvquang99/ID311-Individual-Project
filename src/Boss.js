@@ -7,9 +7,10 @@ import bossAmmoImg from '../assets/boss/bossAttack.gif';
 
 class Boss {
 	constructor() {
-        loadAndScale(bossAmmoImg, 100, 100).then((loadedImg) => {
+        loadAndScale(bossAmmoImg, 70, 70).then((loadedImg) => {
             this.ammoImg = loadedImg;
         });
+        this.health = 5;
         this.ammoArr = [];
         this.shadow = new Sprite(WINDOW_WIDTH/2, 100, 115.5, 'kinematic');
         this.ufo = new Sprite(WINDOW_WIDTH/2, 100, 553.6, 232, 'none');
@@ -27,8 +28,8 @@ class Boss {
         this.draw();
         let x = random(138, WINDOW_WIDTH-138);
         let y = random(58, WINDOW_HEIGHT/2);
-        this.shadow.moveTo(x, y, 3);
-        await this.ufo.moveTo(x, y, 3);
+        this.shadow.moveTo(x, y, 4);
+        await this.ufo.moveTo(x, y, 4);
         await this.shoot(x, y);
         this.randomSequence();
     }
@@ -64,7 +65,7 @@ class Boss {
 
 class Ammo {
     constructor(x, y, img) {
-        this.ammo = new Sprite(x, y+50, 50, 50, "none");
+        this.ammo = new Sprite(x, y+50, 70, 70, "none");
         this.ammo.addAnimation("ammo", img);
         this.ammo.animation.frameDelay = 1;
         this.ammo.direction = random(40, 150);
