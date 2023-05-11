@@ -261,7 +261,6 @@ function draw() {
 			warningSound.stop();
 			bossPhase = true;
 			bossDied = boss.randomSequence();
-			boss.draw();
 		}
 	}
 	if (gameState == 6) { // warning screen
@@ -281,7 +280,6 @@ function draw() {
 		}
 		// undraw boss attackers
 		boss.unDrawAttack();
-		boss.stopMoving = true;
 		bossDied.then(()=> {
 			drawnExploded.then(()=>{
 				boss.unDraw();
@@ -388,6 +386,7 @@ function gameplayCompute() {
 			rockets[i].rocketLaunch();
 		}
 	} else { /*--- Boss ---*/
+		boss.draw();
 		// check bullets collides UFO
 		let bulletArr = boss.isHitUfo(bullets);
 		boss.health -= bulletArr.length;
@@ -496,10 +495,10 @@ function mousePressed() {
 // Spacebar to reload
 function keyPressed() {
 	if (kb.presses('space') && gameState == 1) {
-		gameReset();
 		gameState = 2;
 		staticDisplay.saveScore();
 		rumbleCheck = false;
+		gameReset();
 	}
 	if (keyCode == 27 && gameState == 0) {
 		gameState = 2;

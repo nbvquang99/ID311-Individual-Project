@@ -67,8 +67,10 @@ class Boss {
         this.smoke.moveTo(x, y-50, 4);
         this.explosion.moveTo(x, y, 4);
         await this.ufo.moveTo(x, y, 4);
-        await this.shoot(x, y);
-        this.randomSequence();
+        if (this.attackShown) { 
+            await this.shoot(x, y);
+            this.randomSequence();
+        }
     }
 
     shoot(x, y) {
@@ -120,8 +122,6 @@ class Boss {
         this.attackShown = false;
         this.ammoArr = [];
         this.health = BOSS_HEALTH;
-        this.stopMoving = false;
-        this.unDraw();
     }
 }
 
