@@ -7,6 +7,7 @@ import { AIRDROP_NUM, CITY_NUM, WINDOW_HEIGHT } from './Constants';
 import { Cursor } from './Cursor';
 import { StaticDisplay } from './StaticDisplay';
 import { Airdrop } from './Airdrop';
+import { Boss } from './Boss';
 
 // Globals
 let bullets = []; 			// array of our ammo
@@ -17,6 +18,7 @@ let airDropDelta = 600;		// number of frames before airdrops
 let previousFrameCount = 0;	// store the previous frame count
 let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page
 let rumbleCheck = false;	// screen rumble
+let boss;
 
 // Images
 let backgroundImage;
@@ -74,6 +76,8 @@ function preload() {
 	for (let i=0; i<AIRDROP_NUM; i++) {
         airDrops[i] = new Airdrop(100*i+50);
 	}
+	// init boss
+	boss = new Boss();
 }
 
 function setup() {
@@ -91,6 +95,7 @@ function setup() {
 	for (let i=0; i<AIRDROP_NUM; i++) {
 		for (let j=0; j<CITY_NUM; j++) airDrops[i].getSprite().overlaps(cities[j].getSprite());
 	}
+	boss.randomSequence();
 }
 
 function draw() {
@@ -112,10 +117,9 @@ function draw() {
 		rumble();
 		// airdop
 		if (staticDisplay.bulletNum < 30) {
-			if (airDropStart(airDropDelta, 2)) {
+			if (airDropStart(airDropDelta, 1)) {
 				airDropDelta = Math.floor(random(30, 60))*60;
 			}
-			airDropStart(airDropDelta, 1);
 		}
 		// check gameplay
 		gameplayCompute();
@@ -124,6 +128,7 @@ function draw() {
 			rockets[i].draw();
 			rockets[i].rocketLaunch();
 		}
+		// boss.randomSequence();
 	}
 	if (gameState == 1) { // game over
 		clear();
@@ -306,7 +311,7 @@ function gameplayCompute() {
 		for (let j = bulletArr.length-1; j >= 0; j--) {
 			if (bullets[bulletArr[j]].isSuper) staticDisplay.increaseScore(100);
 			bullets[bulletArr[j]].bulletExploded().then(()=>{
-				bullets.splice(bulletArr[j], 1);
+				// bullets.splice(bulletArr[j], 1);
 			});
 		}
 		rockets[i].rocketReset(false);
@@ -319,7 +324,7 @@ function gameplayCompute() {
 			explSound.play();
 			airDrops[i].airDropExploded();
 			bullets[bulletId].bulletExploded().then(()=>{
-				bullets.splice(bulletId, 1);
+				// bullets.splice(bulletId, 1);
 			});
 			staticDisplay.increaseBulletNum(10);
 		}
