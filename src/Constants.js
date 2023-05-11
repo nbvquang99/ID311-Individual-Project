@@ -6,6 +6,10 @@ export const ATTACKER_WIDTH = 150;
 export const ATTACKER_HEIGTH = 20;
 export const ATTACKER_INIT_NUM = 10;
 
+export const AIRDROP_WIDTH = 100;
+export const AIRDROP_HEIGTH = 100;
+export const AIRDROP_NUM = 10;
+
 export const CITY_HEIGHT = 100;
 export const BLOWN_CITY_HEIGHT = 20;
 export const CITY_WIDTH = 100;

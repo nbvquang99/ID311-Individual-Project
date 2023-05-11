@@ -1,14 +1,14 @@
 import { BLOWN_CITY_HEIGHT, CITY_HEIGHT, CITY_WIDTH, WINDOW_HEIGHT } from './Constants.js';
-import { Subject } from './Subject';
 import { loadAndScale } from './Util.js';
+import { Fire } from './Fire.js';
 
 // Assets
 import cityImg from '../assets/City.png';
 import blownCity from '../assets/explodedCity.png';
 
-class City extends Subject  {
+class City extends Fire  {
 	constructor(x, y) {
-        super();
+        super(x, y);
         this.isBlown = false;
         this.x = x;
         this.y = y;
@@ -31,6 +31,7 @@ class City extends Subject  {
             this.city.collider = "static";
             this.city.y = this.y+40;
             this.city.changeAnimation("cityBlown");
+            this.drawFire();
         }
     }
 
@@ -52,12 +53,7 @@ class City extends Subject  {
 
     unDraw() {
         this.city.autoDraw = false;
-    }
-
-    update(source, ...others) {
-        if (source = "attacker") {
-            this.blown();
-        }
+        this.unDrawFire();
     }
 }
 

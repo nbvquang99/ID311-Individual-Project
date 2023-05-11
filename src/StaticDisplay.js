@@ -8,7 +8,7 @@ class StaticDisplay {
 		this.level = 1;
 		this.blownEnemies = 0;
 		this.bulletNum = BULLET_INIT_NUM;
-		this.attackerNum = ATTACKER_INIT_NUM;
+		this.attackerNum = ATTACKER_INIT_NUM; 
 		this.attackerSpeedMin = 1;
 		this.attackerSpeedMax = 5;
 		this.leaderboard = [{score: 1000}, {score: 1500}];
@@ -61,7 +61,7 @@ class StaticDisplay {
 		this.level++;
 		this.attackerSpeedMin++;
 		this.attackerSpeedMax++;
-		this.attackerNum+=2;
+		this.attackerNum+=3;
 		this.bulletNum+=12;
 		this.score+=500*(this.level-1);
 	}

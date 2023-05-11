@@ -1,13 +1,11 @@
 import { BULLET_HEIGTH, BULLET_WIDTH, EXPLOSION_RADIUS } from './Constants.js';
-import { Subject } from './Subject';
 import { loadAndScale, loadMultiAndScale } from './Util.js';
 
 // Assets
 import bulletImg from '../assets/rockets/missile.png';
 
-class Bullet extends Subject  {
+class Bullet {
 	constructor() {
-        super();
         this.isSuper = false;
         this.shooting = false;
         this.bullet = new Sprite(width/2, height, EXPLOSION_RADIUS, 'none');
@@ -30,6 +28,7 @@ class Bullet extends Subject  {
             this.draw();
             this.bullet.moveTo(mouse, 15).then((res) => {
                 if (res) this.bulletExploded();
+                else this.bulletExploded();
             });
         }
     }

@@ -1,13 +1,11 @@
 import { CURSOR_SIZE } from './Constants.js';
-import { Subject } from './Subject.js';
 
 // Assets
 import cursorImg from '../assets/crosshair/crosshair.png';
 import { loadAndScale } from './Util.js';
 
-class Cursor extends Subject  {
+class Cursor {
 	constructor(totShots) {
-        super();
         loadAndScale(cursorImg, CURSOR_SIZE, CURSOR_SIZE).then((loadedImg) => {
             this.cursorImg = loadedImg;
         });

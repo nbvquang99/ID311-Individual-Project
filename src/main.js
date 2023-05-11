@@ -3,14 +3,18 @@ import { Attacker } from './Attacker';
 import { City } from './City.js';
 import { Bullet } from './Bullet.js';
 import { SuperBullet } from './SuperBullet.js';
-import { CITY_NUM, WINDOW_HEIGHT } from './Constants';
+import { AIRDROP_NUM, CITY_NUM, WINDOW_HEIGHT } from './Constants';
 import { Cursor } from './Cursor';
 import { StaticDisplay } from './StaticDisplay';
+import { Airdrop } from './Airdrop';
 
 // Globals
 let bullets = []; 			// array of our ammo
 let cities = []; 			// array of cities that we need to protect
 let rockets = []; 			// array of attackers
+let airDrops = [];			// array of airdrops
+let airDropDelta = 1800;	// number of frames before airdrops
+let previousFrameCount = 0;	// store the previous frame count
 let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page
 let rumbleCheck = false;	// screen rumble
 
@@ -66,6 +70,10 @@ function preload() {
 	for (let i=0; i<100; i++) {
         rockets[i] = new Attacker(staticDisplay.attackerSpeedMin, staticDisplay.attackerSpeedMax);
 	}
+	// init airdrops
+	for (let i=0; i<AIRDROP_NUM; i++) {
+        airDrops[i] = new Airdrop(100*i+50);
+	}
 }
 
 function setup() {
@@ -81,7 +89,9 @@ function setup() {
     startButton.hide();
     leaderButton.hide();
     backButton.hide();
-
+	for (let i=0; i<AIRDROP_NUM; i++) {
+		for (let j=0; j<CITY_NUM; j++) airDrops[i].getSprite().overlaps(cities[j].getSprite());
+	}
 }
 
 function draw() {
@@ -101,6 +111,13 @@ function draw() {
 		}
 		// check rumble
 		rumble();
+		// airdop
+		if (staticDisplay.bulletNum < 30) {
+			if (airDropStart(airDropDelta, 1)) {
+				airDropDelta = Math.floor(random(30, 60))*60;
+			}
+			airDropStart(airDropDelta, 1);
+		}
 		// check gameplay
 		gameplayCompute();
 		// draw attackers
@@ -217,6 +234,22 @@ function draw() {
 	}
 }
 
+function airDropStart(delta, num) {
+	if (frameCount - delta >= previousFrameCount) {
+		previousFrameCount = frameCount;
+		for (let i=0; i<num; i++) {
+			let id = -1;
+			while (id == -1 || airDrops[id].getSprite().speed != 0) {
+				id = Math.floor(random(0, AIRDROP_NUM));
+			}
+			airDrops[id].airDropLaunch();
+			airDropSound.play();
+		}
+		return true;
+	}
+	return false;
+}
+
 function gameplayHide() {
 	for (let i = 0; i < cities.length; i++) {
 		cities[i].unDraw();
@@ -226,6 +259,9 @@ function gameplayHide() {
 	}
 	for (let i = 0; i < bullets.length; i++) {
 		bullets[i].unDraw();
+	}
+	for (let i = 0; i < airDrops.length; i++) {
+		airDrops[i].unDraw();
 	}
 	cursor.unDraw();
 }
@@ -238,6 +274,10 @@ function gameReset() {
 	// reset rockets
 	for (let i = 0; i < rockets.length; i++) {
 		rockets[i].rocketReset(true);
+	}
+	// reset airdrops
+	for (let i = 0; i < airDrops.length; i++) {
+		airDrops[i].airDropReset(true);
 	}
 	// reset bullets
 	bullets = [];
@@ -269,6 +309,19 @@ function gameplayCompute() {
 			bullets.splice(bulletArr[j], 1);
 		}
 		rockets[i].rocketReset(false);
+	}
+
+	// check airdrop collision
+	for (let i = 0; i < airDrops.length; i++) {
+		let bulletId = airDrops[i].isHit(bullets);
+		if (bulletId > -1) {
+			explSound.play();
+			airDrops[i].airDropExploded();
+			bullets[bulletId].bulletExploded();
+			bullets.splice(bulletId, 1);
+			staticDisplay.increaseBulletNum(10);
+		}
+		airDrops[i].airDropReset(false);
 	}
 
 	// check increase level

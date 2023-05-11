@@ -1,14 +1,12 @@
 import { ATTACKER_HEIGTH, ATTACKER_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH } from './Constants.js';
-import { Subject } from './Subject';
 import { loadAndScale, loadMultiAndScale } from './Util.js';
 
 // Assets
 import smokeImg from '../assets/rockets/smoke.png';
 
-class Attacker extends Subject  {
+class Attacker {
 	constructor(speedMin, speedMax) {
-        super();
-        this.rocket = new Sprite(random(0,WINDOW_WIDTH), 0, ATTACKER_WIDTH, ATTACKER_HEIGTH, 'kinematic');
+        this.rocket = new Sprite(random(0,WINDOW_WIDTH), 0, 80, 10, 'kinematic');
         loadMultiAndScale(10, "assets/explosions/expl", ".png").then((loadedArr)=>{
             this.rocket.addAnimation("explosion", ...loadedArr);
             this.rocket.animation.noLoop();
