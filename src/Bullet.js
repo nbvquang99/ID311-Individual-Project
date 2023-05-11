@@ -30,7 +30,7 @@ class Bullet {
             this.bullet.moveTo(mouse, 15).then((res) => {
                 if (res) this.bulletExploded();
                 else this.bulletExploded();
-            });
+            }).catch(()=>{this.bulletExploded();});
         }
     }
 

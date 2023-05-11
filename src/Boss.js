@@ -4,6 +4,8 @@ import { loadAndScale, loadMultiAndScale } from './Util.js';
 // Assets
 import bossImg from '../assets/boss/ufo.png';
 import bossAmmoImg from '../assets/boss/bossAttack.gif';
+import bossSmokeImg from '../assets/boss/bossSmoke.gif';
+import bossExplodedImg from '../assets/boss/bossExplode.gif';
 
 class Boss {
 	constructor() {
@@ -12,29 +14,43 @@ class Boss {
         });
         this.health = 5;
         this.ammoArr = [];
-        this.shadow = new Sprite(WINDOW_WIDTH/2, 100, 115.5, 'kinematic');
+        this.shadow = new Sprite(WINDOW_WIDTH/2, 100, 115.5, 'none');
+        this.smoke = new Sprite(WINDOW_WIDTH/2, 50, 115.5, 'none');
+        this.explosion = new Sprite(WINDOW_WIDTH/2, 100, 115.5, 'none');
         this.ufo = new Sprite(WINDOW_WIDTH/2, 100, 553.6, 232, 'none');
         this.ufo.spriteSheet = bossImg;
         this.ufo.offset.x = 0;
+        loadAndScale(bossExplodedImg, 50, 50).then((loadedImg) => {
+            this.explosion.addAnimation("explosion", loadedImg);
+        });
         this.ufo.addAnis({
             ufo: { row: 0, frames: 3, frameDelay: 15}
         });
+        loadAndScale(bossSmokeImg, 150, 150).then((loadedImg) => {
+            this.smoke.addAnimation("smoke", loadedImg);
+        });
         this.ufo.animation.scale = 0.5;
         this.ufo.autoDraw = false;
+        this.shadow.autoDraw = false;
+        this.explosion.autoDraw = false;
+        this.smoke.autoDraw = false;
         this.ufo.pixelPerfect = true;
     }
 
     isHitUfo(objArr) {
+        let res = [];
         for (let i = 0; i<objArr.length; i++) {
-            if (this.ufo.collides(objArr[i].getSprite())) return i;
+            if (this.shadow.collides(objArr[i].getSprite())) res.push(i);
         }
-        return -1;
+        return res;
     }
 
-    isHitAmmo(objArr) {
-        for (let i = 0; i<this.ammoArr.length; i++) {
-            for (let j = 0; j<objArr.length; j++) {
-                if (this.ammoArr[i].getSprite().collides(objArr[j].getSprite())) return j;
+    isHitAmmo(i, objArr) {
+        for (let j = 0; j<objArr.length; j++) {
+            if (this.ammoArr[i].getSprite().collides(objArr[j].getSprite())) {
+                this.ammoArr[i].getSprite().remove();
+                this.ammoArr.splice(i, 1);
+                return j;
             }
         }
         return -1;
@@ -45,6 +61,7 @@ class Boss {
         let x = random(138, WINDOW_WIDTH-138);
         let y = random(58, WINDOW_HEIGHT/2);
         this.shadow.moveTo(x, y, 4);
+        this.smoke.moveTo(x, y-50, 4);
         await this.ufo.moveTo(x, y, 4);
         await this.shoot(x, y);
         this.randomSequence();
@@ -62,20 +79,16 @@ class Boss {
         return this.ufo;
     }
 
-    isHitMulti(objArr) {
-        let res = [];
-        for (let i = 0; i<objArr.length; i++) {
-            if (this.ufo.collides(objArr[i].getSprite())) res.push(i);
-        }
-        return res;
-    }
-
 	draw() {
+        this.shadow.collider = "kinematics";
         this.ufo.autoDraw = true;
+        this.shadow.autoDraw = true;
+        if (this.health < 3) this.smoke.autoDraw = true;
     }
 
     unDraw() {
         this.ufo.autoDraw = false;
+        this.shadow.autoDraw = false;
     }
 }
 

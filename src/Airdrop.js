@@ -6,7 +6,7 @@ import airdropImg from '../assets/airdrop.png';
 
 class Airdrop {
 	constructor(x) {
-        this.airDrop = new Sprite(x, -10, 50, 'kinematic');
+        this.airDrop = new Sprite(x, -100, 50, 'kinematic');
         loadAndScale(airdropImg, AIRDROP_WIDTH, AIRDROP_HEIGTH).then((loadedImg) => {
             this.airDrop.addAnimation("airdrop", loadedImg);
         });
@@ -27,7 +27,7 @@ class Airdrop {
 
     airDropReset(isBlown) {
         if (isBlown || this.airDrop.y > WINDOW_HEIGHT + 20) {
-            this.airDrop.y = -10;
+            this.airDrop.y = -100;
             this.airDrop.speed = 0;
             this.unDraw();
         }

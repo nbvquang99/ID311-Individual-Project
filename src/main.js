@@ -286,6 +286,7 @@ function gameplayCompute() {
 			airDropDelta = Math.floor(random(30, 60))*60;
 		}
 	}
+	/*--- Normal ---*/
 	if (!bossPhase) {
 		// check collision and change statistic
 		for (let i = 0; i < staticDisplay.attackerNum; i++) {
@@ -315,10 +316,42 @@ function gameplayCompute() {
 			rockets[i].draw();
 			rockets[i].rocketLaunch();
 		}
-	} else {
+	} else { /*--- Boss ---*/
 		// undraw attackers
 		for (let i = 0; i < staticDisplay.attackerNum; i++) {
 			rockets[i].unDraw();
+			rockets[i].rocketReset(true);
+		}
+		// check bullets collides UFO
+		let bulletArr = boss.isHitUfo(bullets);
+		boss.health -= bulletArr.length;
+		for (let j = bulletArr.length-1; j >= 0; j--) {
+			if (bullets[bulletArr[j]].isSuper) boss.health--;
+			explSound.play();
+			bullets[bulletArr[j]].bulletExploded();
+		}
+		// check health boss
+		if (boss.health <= 0) {
+			gameState = 1;
+			staticDisplay.increaseScore(10000);
+		}
+		// check boss attack collision with bullet and cities
+		for (let i=boss.ammoArr.length-1; i>=0; i--) {
+			let cityId = boss.isHitAmmo(i, cities);
+			if (cityId > -1) {
+				explSound.play();
+				cities[cityId].blown();
+				rumbleCheck = true;
+				continue;
+			}
+			let bulletId = boss.isHitAmmo(i, bullets);
+			if (bulletId > -1) {
+				explSound.play();
+				bullets[bulletId].bulletExploded();
+				staticDisplay.increaseScore(100);
+				if (bullets[bulletId].isSuper) staticDisplay.increaseScore(100);
+				continue;
+			}
 		}
 	}
 	
