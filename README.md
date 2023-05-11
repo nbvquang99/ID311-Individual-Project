@@ -11,6 +11,6 @@
 ## Description
 - Reference: [Taylor Edgerton Repo](https://github.com/TaylorEdgerton/Creative-Coding-Game)
 - All the assets (audios, videos, images) are taken from the repo above.
-- The game idea is based on the game of Taylor Edgerton.
-- All the source code and gameplay logic is implemented by Nguyen Ba Vinh Quang.
+- The basic game idea is based on the game of Taylor Edgerton.
+- All the source code, gameplay logic and improvement are implemented by Nguyen Ba Vinh Quang.
 - Library: p5.js and p5play.
