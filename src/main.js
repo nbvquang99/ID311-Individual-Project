@@ -346,13 +346,15 @@ function gameReset() {
 	bossPhase = false;
 	bossDied = null;
 	drawnExploded = null;
+	// reset airdrop period
+	airDropDelta = 600;
 }
 
 function gameplayCompute() {
 	// airdop
 	if (staticDisplay.bulletNum < 30) {
 		if (airDropStart(airDropDelta, 1)) {
-			airDropDelta = Math.floor(random(30, 60))*60;
+			airDropDelta = Math.floor(random(15, 60))*60;
 		}
 	}
 	/*--- Normal ---*/
