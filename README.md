@@ -40,7 +40,7 @@
 </p>
 
 ## 1. The story
-My first proposal is a 2D game with a single button to control the character - Itachi. Itachi will run on an endless road where the enemy will be spawned randomly, the player has to control Itachi to dodge the enemy's attacks as well as obstacles. It likes the Dinosaur game in Chrome.
+My [first proposal](http://git.prototyping.id/20190710/homework5/src/branch/main/PROPOSAL.md) is a 2D game with a single button to control the character - Itachi. Itachi will run on an endless road where the enemy will be spawned randomly, the player has to control Itachi to dodge the enemy's attacks as well as obstacles. It likes the Dinosaur game in Chrome.
 
 However, due to lacking Sprite assets to create character movement as well as the improvement idea for the game. I decide to switch my project to the Missile Command Game. As the name, your mission in the game is to control a missile launcher to defend four cities from attackers (rockets and UFOs).
 <p align="center"><img src="assets/readme/gameplay1.png" width=50% height=50% alt></p>
