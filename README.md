@@ -11,6 +11,14 @@
 - [Code Description](#code-description)
   - [1. Techstack](#1-techstack)
   - [2. Implementation](#2-implementation)
+    - [**Airdrop**](#airdrop)
+    - [**Attacker**](#attacker)
+    - [**Cursor**](#cursor)
+    - [**Bullet**](#bullet)
+    - [**SuperBullet**](#superbullet)
+    - [**Fire**](#fire)
+    - [**City**](#city)
+- [Highlight](#highlight)
 - [Acknowledge](#acknowledge)
 ---
 # ID311 Individual project submission form
@@ -55,6 +63,30 @@ However, due to lacking Sprite assets to create character movement as well as th
 - Libraries: p5.js and p5play.
 
 ## 2. Implementation
+<p align="center"><img src="assets/readme/ClassDiagram1.png" width=90% height=90% alt></p>
+<p align="center"><em>Class Diagram</em></p>
+
+### **Airdrop**
+Loading airdrop image to an Animation of a Sprite object. Then draw it at location of `(x, y); x = random(width), and y = -10`. An airdrop Sprite can be launched by change its `speed` and `direction` to 90 degree.
+### **Attacker**
+This class represents enemy rockets. Each object is a separated rocket.
+Loading rocket image to an Animation of a Sprite object, also loading explosion assets to another Animation. Initially draw it at location of `(x, y); x = random(width), and y = -10`. An rocket Sprite can be launched by change its `speed` and `direction` to a random degree between [60, 150].
+When collision detected, the Sprite object changes its Animation to explosion. After the explosion end, the Attacker object will be reset and reuse.
+### **Cursor**
+Loading cursor image to an Image object and draw it at the location of mouse in real-time. The default cursor is hidden by `noCursor`.
+### **Bullet**
+This class represents player's missiles. Each object is a separated missile.
+Loading missile image to an Animation of a Sprite object, also loading explosion assets to another Animation of the same Sprite object. Initially put it at location of `(width/2, height)` and set it `invisible`. If a mouse button is clicked, an missile will be launched by change its `speed` and `direction` toward the `Cursor's location`, also change it to `visible`.
+When collision detected, the Sprite object changes its Animation to explosion. After the explosion end, the Bullet object will be reset and reuse.
+### **SuperBullet**
+It is similar to Bullet class except it loads another and bigger asset of missile image.
+### **Fire**
+This class is used to draw the fire animation by loading fire assets into a Sprite object.
+### **City**
+This class represents player's missiles. Each object is a separated missile.
+Loading missile image to an Animation of a Sprite object, also loading explosion assets to another Animation of the same Sprite object. Initially put it at location of `(width/2, height)` and set it `invisible`. If a mouse button is clicked, an missile will be launched by change its `speed` and `direction` toward the `Cursor's location`, also change it to `visible`.
+When collision detected, the Sprite object changes its Animation to explosion. After the explosion end, the Bullet object will be reset and reuse.
+# Highlight
 
 # Acknowledge
 - Reference: [Taylor Edgerton Repository](https://github.com/TaylorEdgerton/Creative-Coding-Game)
