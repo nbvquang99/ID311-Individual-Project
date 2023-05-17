@@ -10,7 +10,7 @@
     - [*Notes*](#notes)
 - [Code Description](#code-description)
   - [1. Techstack](#1-techstack)
-  - [2. Implementation](#2-implementation)
+  - [2. Class Structure](#2-class-structure)
     - [**Airdrop**](#airdrop)
     - [**Attacker**](#attacker)
     - [**Cursor**](#cursor)
@@ -22,6 +22,7 @@
     - [**Ammo**](#ammo)
     - [**StaticDisplay**](#staticdisplay)
     - [**main**](#main)
+  - [3. Game States](#3-game-states)
 - [Highlight](#highlight)
 - [Acknowledge](#acknowledge)
 ---
@@ -66,8 +67,8 @@ However, due to lacking Sprite assets to create character movement as well as th
 - Javascript with OOP and Pattern design.
 - Libraries: p5.js and p5play.
 
-## 2. Implementation
-<p align="center"><img src="assets/readme/ClassDiagram1.png" width=90% height=90% alt></p>
+## 2. Class Structure
+<p align="center"><img src="assets/readme/classDiagram1.png" width=90% height=90% alt></p>
 <p align="center"><em>Class Diagram</em></p>
 
 ### **Airdrop**
@@ -105,8 +106,17 @@ An object of this class will be created after `Boss.shoot()` is executed.
 This class contains and controls the stats of the game such as, `score`, `level`, the current `number of missiles`...
 It is also responsible to draw the `cannon` at `(width/2, height)`, and draw the score, level.
 ### **main**
-This class contains and controls the stats of the game such as, `score`, `level`, the current `number of missiles`...
-It is also responsible to draw the `cannon` at `(width/2, height)`, and draw the score, level.
+This is not a `Class` however, it is the most impotant part of the game, it can be considered as the controller of the application.
+It is responsible to receive user input then decide how to draw and call the methods of objects of the above classes in real-time.
+At each frame of game:
+- It handles the collision detection between cities and attackers, missiles and attackers by calling the `isHit` method from `Boss` and `Attacker` classes.
+- It handles the stats changing by checking the logic and calling the method from `StaticDisplay` class.
+- It also works as a [state machine](#3-game-states), state changing condition will be checked at each frame.
+## 3. Game States
+<p align="center"><img src="assets/readme/stateMachine1.png" width=100% height=100% alt></p>
+<p align="center"><em>State Diagram</em></p>
+
+
 # Highlight
 
 # Acknowledge
