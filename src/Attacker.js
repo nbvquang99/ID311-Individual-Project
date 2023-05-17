@@ -7,7 +7,7 @@ import smokeImg from '../assets/rockets/smoke.png';
 class Attacker {
 	constructor(speedMin, speedMax) {
         this.rocket = new Sprite(random(0,WINDOW_WIDTH), 0, 80, 10, 'kinematic');
-        loadMultiAndScale(10, "assets/explosions/expl", ".png").then((loadedArr)=>{
+        loadMultiAndScale(10, "../assets/explosions/expl", ".png").then((loadedArr)=>{
             this.rocket.addAnimation("explosion", ...loadedArr);
             this.rocket.animation.noLoop();
         });
@@ -37,7 +37,7 @@ class Attacker {
         if (isInit || this.rocket.y > WINDOW_HEIGHT+10 || (this.rocket.animation.name == "explosion" && this.rocket.animation.frame == 9)) {
             this.rocket.changeAnimation("rocket");
             this.rocket.x = random(0,width);
-            this.rocket.y = 0;
+            this.rocket.y = -100;
             this.angle = random(45, 160);
             this.rocket.rotation = this.angle;
             this.rocket.direction = this.angle;

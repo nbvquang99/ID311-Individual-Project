@@ -3,10 +3,11 @@ import { Attacker } from './Attacker';
 import { City } from './City.js';
 import { Bullet } from './Bullet.js';
 import { SuperBullet } from './SuperBullet.js';
-import { AIRDROP_NUM, CITY_NUM, WINDOW_HEIGHT } from './Constants';
+import { AIRDROP_NUM, CITY_NUM, LEVEL_TO_BOSS, WINDOW_HEIGHT } from './Constants';
 import { Cursor } from './Cursor';
 import { StaticDisplay } from './StaticDisplay';
 import { Airdrop } from './Airdrop';
+import { Boss } from './Boss';
 
 // Globals
 let bullets = []; 			// array of our ammo
@@ -15,8 +16,13 @@ let rockets = []; 			// array of attackers
 let airDrops = [];			// array of airdrops
 let airDropDelta = 600;		// number of frames before airdrops
 let previousFrameCount = 0;	// store the previous frame count
-let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page
+let gameState = 4;			// 0:gameplay; 1:gameOver; 2:Main menu; 3:Leaderboard; 4:splash page; 5:boss warning; 6:boss defeated
 let rumbleCheck = false;	// screen rumble
+let boss;
+let bossPhase = false;
+let warningStartFrame;
+let bossDied;
+let drawnExploded;
 
 // Images
 let backgroundImage;
@@ -24,6 +30,7 @@ let scoreTitle;
 let gameTitle;
 let leaderboardTitle;
 let splashVideo;
+let warning;
 
 // Sound
 let laserSound;
@@ -32,6 +39,7 @@ let noAmmoSound;
 let nextLevelSound;
 let introMusic;
 let airDropSound;
+let warningSound;
 
 // Cursor
 let cursor;
@@ -50,6 +58,7 @@ function preload() {
 	scoreTitle = loadImage("../assets/Text/score.png");
 	gameTitle = loadImage("../assets/Text/title.png");
 	leaderboardTitle = loadImage("../assets/Text/leaderboard.png");
+	warning = loadImage("../assets/Text/warning.gif");
 	splashVideo = createVideo(['../assets/Video/video1.mp4']);
 	// sound loading
 	explSound = loadSound('../assets/Sounds/explosionSound.wav');
@@ -58,6 +67,7 @@ function preload() {
     nextLevelSound = loadSound('../assets/Sounds/NextLevel.wav');
     introMusic = loadSound('../assets/Sounds/throughSpace.mp3');
     airDropSound = loadSound('../assets/Sounds/airdrop.wav');
+    warningSound = loadSound('../assets/Sounds/warningSound.mp3');
 	// create Cursor
 	cursor = new Cursor();
 	// create static display
@@ -74,6 +84,8 @@ function preload() {
 	for (let i=0; i<AIRDROP_NUM; i++) {
         airDrops[i] = new Airdrop(100*i+50);
 	}
+	// init boss
+	boss = new Boss();
 }
 
 function setup() {
@@ -81,6 +93,8 @@ function setup() {
 	world.gravity = 0;
 	// resize background
 	backgroundImage.resize(width, height);
+	// resize warning
+	warning.resize(width, warning.height);
 	// button creation
     startButton = createButton('Start Game');
     leaderButton = createButton ('Leaderboard');
@@ -110,20 +124,8 @@ function draw() {
 		}
 		// check rumble
 		rumble();
-		// airdop
-		if (staticDisplay.bulletNum < 30) {
-			if (airDropStart(airDropDelta, 2)) {
-				airDropDelta = Math.floor(random(30, 60))*60;
-			}
-			airDropStart(airDropDelta, 1);
-		}
 		// check gameplay
 		gameplayCompute();
-		// draw attackers
-		for (let i = 0; i < staticDisplay.attackerNum; i++) {
-			rockets[i].draw();
-			rockets[i].rocketLaunch();
-		}
 	}
 	if (gameState == 1) { // game over
 		clear();
@@ -232,6 +234,60 @@ function draw() {
 			gameState = 2;
 		}
 	}
+	if (gameState == 5) { // warning screen
+		clear();
+		// draw background
+		background("Darkblue");
+		imageMode(CORNER);
+		image(backgroundImage,0,0);
+		image(warning, 0, height/2-200);
+		// draw cursor
+		cursor.draw();
+		// draw scores and cannon
+		staticDisplay.drawScore();
+		staticDisplay.drawCannon();
+		// draw cities
+		for (let i = 0; i < CITY_NUM; i++) {
+			cities[i].draw();
+		}
+		// undraw attackers
+		for (let i = 0; i < staticDisplay.attackerNum; i++) {
+			rockets[i].unDraw();
+			rockets[i].rocketReset(true);
+		}
+		// after 5s, move to the boss phase
+		if (frameCount - warningStartFrame >= 300) {
+			gameState = 0;
+			warningSound.stop();
+			bossPhase = true;
+			bossDied = boss.randomSequence();
+		}
+	}
+	if (gameState == 6) { // boss died screen
+		clear();
+		// draw background
+		background("Darkblue");
+		imageMode(CORNER);
+		image(backgroundImage,0,0);
+		// draw cursor
+		cursor.draw();
+		// draw scores and cannon
+		staticDisplay.drawScore();
+		staticDisplay.drawCannon();
+		// draw cities
+		for (let i = 0; i < CITY_NUM; i++) {
+			cities[i].draw();
+		}
+		// undraw boss attackers
+		boss.unDrawAttack();
+		bossDied.then(()=> {
+			drawnExploded.then(()=>{
+				boss.unDraw();
+				gameState = 1;
+			});
+		});
+		bossPhase = false;
+	}
 }
 
 function airDropStart(delta, num) {
@@ -264,6 +320,7 @@ function gameplayHide() {
 		airDrops[i].unDraw();
 	}
 	cursor.unDraw();
+	boss.unDraw();
 }
 
 function gameReset() {
@@ -283,44 +340,96 @@ function gameReset() {
 	bullets = [];
 	// reset statistic
 	staticDisplay.reset();
+	allowIncLevel = false;
+	// reset boss
+	boss.bossReset();
+	bossPhase = false;
+	bossDied = null;
+	drawnExploded = null;
+	// reset airdrop period
+	airDropDelta = 600;
 }
 
 function gameplayCompute() {
-	// check collision and change statistic
-	for (let i = 0; i < staticDisplay.attackerNum; i++) {
-		let cityId = rockets[i].isHit(cities);
-		if (cityId > -1) {
-			explSound.play();
-			rockets[i].rocketExploded();
-			cities[cityId].blown();
-			rumbleCheck = true;
+	// airdop
+	if (staticDisplay.bulletNum < 30) {
+		if (airDropStart(airDropDelta, 1)) {
+			airDropDelta = Math.floor(random(15, 60))*60;
 		}
-		let bulletArr = rockets[i].isHitMulti(bullets);
-		if (bulletArr.length > 0) {
-			explSound.play();
-			rockets[i].rocketExploded();
-			staticDisplay.increaseScore(100);
-			staticDisplay.increaseBlownEnemies(1);
-			allowIncLevel = true;
-		}
-		for (let j = bulletArr.length-1; j >= 0; j--) {
-			if (bullets[bulletArr[j]].isSuper) staticDisplay.increaseScore(100);
-			bullets[bulletArr[j]].bulletExploded().then(()=>{
-				bullets.splice(bulletArr[j], 1);
-			});
-		}
-		rockets[i].rocketReset(false);
 	}
-
+	/*--- Normal ---*/
+	if (!bossPhase) {
+		// check collision and change statistic
+		for (let i = 0; i < staticDisplay.attackerNum; i++) {
+			let cityId = rockets[i].isHit(cities);
+			if (cityId > -1) {
+				explSound.play();
+				rockets[i].rocketExploded();
+				cities[cityId].blown();
+				rumbleCheck = true;
+			}
+			let bulletArr = rockets[i].isHitMulti(bullets);
+			if (bulletArr.length > 0) {
+				explSound.play();
+				rockets[i].rocketExploded();
+				staticDisplay.increaseScore(100);
+				staticDisplay.increaseBlownEnemies(1);
+				allowIncLevel = true;
+			}
+			for (let j = bulletArr.length-1; j >= 0; j--) {
+				if (bullets[bulletArr[j]].isSuper) staticDisplay.increaseScore(100);
+				bullets[bulletArr[j]].bulletExploded();
+			}
+			rockets[i].rocketReset(false);
+		}
+		// draw attackers
+		for (let i = 0; i < staticDisplay.attackerNum; i++) {
+			rockets[i].draw();
+			rockets[i].rocketLaunch();
+		}
+	} else { /*--- Boss ---*/
+		boss.draw();
+		// check bullets collides UFO
+		let bulletArr = boss.isHitUfo(bullets);
+		boss.health -= bulletArr.length;
+		for (let j = bulletArr.length-1; j >= 0; j--) {
+			if (bullets[bulletArr[j]].isSuper) boss.health--;
+			explSound.play();
+			bullets[bulletArr[j]].bulletExploded();
+		}
+		// check boss defeated
+		if (boss.health <= 0) {
+			gameState = 6;
+			staticDisplay.increaseScore(10000);
+			drawnExploded = boss.drawExplosion();
+		}
+		// check boss attack collision with bullet and cities
+		for (let i=boss.ammoArr.length-1; i>=0; i--) {
+			let cityId = boss.isHitAmmo(i, cities);
+			if (cityId > -1) {
+				explSound.play();
+				cities[cityId].blown();
+				rumbleCheck = true;
+				continue;
+			}
+			let bulletId = boss.isHitAmmo(i, bullets);
+			if (bulletId > -1) {
+				explSound.play();
+				bullets[bulletId].bulletExploded();
+				staticDisplay.increaseScore(100);
+				if (bullets[bulletId].isSuper) staticDisplay.increaseScore(100);
+				continue;
+			}
+		}
+	}
+	
 	// check airdrop collision
 	for (let i = 0; i < airDrops.length; i++) {
 		let bulletId = airDrops[i].isHit(bullets);
 		if (bulletId > -1) {
 			explSound.play();
 			airDrops[i].airDropExploded();
-			bullets[bulletId].bulletExploded().then(()=>{
-				bullets.splice(bulletId, 1);
-			});
+			bullets[bulletId].bulletExploded();
 			staticDisplay.increaseBulletNum(10);
 		}
 		airDrops[i].airDropReset(false);
@@ -331,6 +440,12 @@ function gameplayCompute() {
 		allowIncLevel = false;
 		nextLevelSound.play();
 		staticDisplay.increaseLevel();
+		if (staticDisplay.level == LEVEL_TO_BOSS) { // into warning screen
+			gameState = 5;
+			warningSound.loop();
+			warningSound.play();
+			warningStartFrame = frameCount;
+		}
 	}
 
 	// check game over
@@ -339,9 +454,7 @@ function gameplayCompute() {
 		return acc;
 	}, 0);
 	if (citiesLeft == 0) {
-		rumbleCheck = false;
 		gameState = 1;
-		staticDisplay.saveScore();
 	}
 }
 
@@ -385,6 +498,8 @@ function mousePressed() {
 function keyPressed() {
 	if (kb.presses('space') && gameState == 1) {
 		gameState = 2;
+		staticDisplay.saveScore();
+		rumbleCheck = false;
 		gameReset();
 	}
 	if (keyCode == 27 && gameState == 0) {
