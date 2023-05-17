@@ -18,6 +18,10 @@
     - [**SuperBullet**](#superbullet)
     - [**Fire**](#fire)
     - [**City**](#city)
+    - [**Boss**](#boss)
+    - [**Ammo**](#ammo)
+    - [**StaticDisplay**](#staticdisplay)
+    - [**main**](#main)
 - [Highlight](#highlight)
 - [Acknowledge](#acknowledge)
 ---
@@ -83,9 +87,26 @@ It is similar to Bullet class except it loads another and bigger asset of missil
 ### **Fire**
 This class is used to draw the fire animation by loading fire assets into a Sprite object.
 ### **City**
-This class represents player's missiles. Each object is a separated missile.
-Loading missile image to an Animation of a Sprite object, also loading explosion assets to another Animation of the same Sprite object. Initially put it at location of `(width/2, height)` and set it `invisible`. If a mouse button is clicked, an missile will be launched by change its `speed` and `direction` toward the `Cursor's location`, also change it to `visible`.
-When collision detected, the Sprite object changes its Animation to explosion. After the explosion end, the Bullet object will be reset and reuse.
+This class represents cities that player needs to protect. Each object is a separated city.
+Loading `city and blown-city` images to two Animations of a Sprite object, also inherits fire animation from `Fire` class.
+When collision detected, the Sprite object changes its Animation to `blown-city`, and draw the `fire` Animation.
+### **Boss**
+This class represents the Boss of the game.
+Each object of this class contains four Sprites: `smoke, explosion, ufo, and shadow.`
+`smoke` Sprite draw the smoke when Boss's health is low.
+`explosion` Sprite draw explosion animation when Boss is defeated.
+`ufo` Sprite draw the animation of Boss.
+`shadow` Sprite is a ***invisible*** Sprite but ***enable*** to collision detecting, the `Bullet` object can collide with this Sprite.
+### **Ammo**
+This class represents the Boss's attacking.
+`ammo` Sprite draw a blue sphere at the position of Boss and start to move toward the `City` object.
+An object of this class will be created after `Boss.shoot()` is executed.
+### **StaticDisplay**
+This class contains and controls the stats of the game such as, `score`, `level`, the current `number of missiles`...
+It is also responsible to draw the `cannon` at `(width/2, height)`, and draw the score, level.
+### **main**
+This class contains and controls the stats of the game such as, `score`, `level`, the current `number of missiles`...
+It is also responsible to draw the `cannon` at `(width/2, height)`, and draw the score, level.
 # Highlight
 
 # Acknowledge
