@@ -1,14 +1,14 @@
 ## Table of contents
 
-- [ID311 Individual project submission form](#id311-individual-project-submission-form)
-- [Game Description](#game-description)
+- [I. ID311 Individual project submission form](#i-id311-individual-project-submission-form)
+- [II. Game Description](#ii-game-description)
   - [1. The story](#1-the-story)
   - [2. The game mechanics](#2-the-game-mechanics)
     - [*Game control*](#game-control)
     - [*Game mission*](#game-mission)
     - [*Game objects*](#game-objects)
     - [*Notes*](#notes)
-- [Code Description](#code-description)
+- [III. Code Description](#iii-code-description)
   - [1. Techstack](#1-techstack)
   - [2. Class Structure](#2-class-structure)
     - [**Airdrop**](#airdrop)
@@ -23,10 +23,10 @@
     - [**StaticDisplay**](#staticdisplay)
     - [**main**](#main)
   - [3. Game States](#3-game-states)
-- [Highlight](#highlight)
-- [Acknowledge](#acknowledge)
+- [IV. Highlight](#iv-highlight)
+- [V. Acknowledge](#v-acknowledge)
 ---
-# ID311 Individual project submission form
+# I. ID311 Individual project submission form
 
 1. **Name**: Nguyen Ba Vinh Quang
 2. **KAIST ID**: 20190710
@@ -34,7 +34,7 @@
 4. **GIT URL**: [Click here](https://github.com/nbvquang99/ID311-Individual-Project)
 5. **Youtube Demo Video**: [Click here](https://youtu.be/T5KPD_Y2Cfg)
    
-# Game Description
+# II. Game Description
 <p align="center">
   <img src="assets/Text/title.png" alt="Logo">
 </p>
@@ -62,7 +62,7 @@ However, due to lacking Sprite assets to create character movement as well as th
 ### *Notes*
 - In order to make a short video demo, I set up the game so that the player only needs to reach **level 3** to fight with the UFO boss. The player is victorious after defeating the boss.
 
-# Code Description
+# III. Code Description
 ## 1. Techstack
 - Javascript with OOP and Pattern design.
 - Libraries: p5.js and p5play.
@@ -117,10 +117,16 @@ At each frame of game:
 <p align="center"><em>State Diagram</em></p>
 
 There are seven states in the above diagram. These states are represented by a `gameState` global variable in the source code. At each frame of game, `gameState` will be checked to draw appropriated objects.
-# Highlight
+# IV. Highlight
+- There are some mistakes during the structural design. Firstly, I plan that the game states should be around 3 which is simple enough to use a global `gameState` variable instead of a State machine class pattern design. However, with improvement in the game idea, the game state becomes more complex but lacks time to change the approach. Besides that, some classes could be combined and merged with the coincidental properties, methods and then declare child classes to inherit them.
+- Future improvement:
+  - Re-design the classes, using more inheritance.
+  - Using a state machine class.
+  - Add more types of attacker and more Bosses to fight with.
+  - Optimize the stats to make the game balance.
 
-# Acknowledge
+# V. Acknowledge
 - Reference: [Taylor Edgerton Repository](https://github.com/TaylorEdgerton/Creative-Coding-Game)
-- Some of the assets (audios, videos, images) are taken from the repository of Tayler.
+- Some of the assets (audios, videos, images) are taken from the repository of Tayler Edgerton.
 - The **BASIC** game idea is based on the game of Taylor Edgerton.
 - All the source code in this repository, gameplay logic and improvement are implemented from scratch by Nguyen Ba Vinh Quang.
