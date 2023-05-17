@@ -116,7 +116,7 @@ At each frame of game:
 <p align="center"><img src="assets/readme/stateMachine1.png" width=100% height=100% alt></p>
 <p align="center"><em>State Diagram</em></p>
 
-
+There are seven states in the above diagram. These states are represented by a `gameState` global variable in the source code. At each frame of game, `gameState` will be checked to draw appropriated objects.
 # Highlight
 
 # Acknowledge
